@@ -5,11 +5,17 @@
 
     <style>
 
+        body {
+            padding: 100px
+        }
+    
+
         input, select, textarea {
             width: 100%;
             padding: 8px;
             margin-top: 5px;
             font-size: 14px;
+
         }
 
         input:focus,
@@ -17,6 +23,7 @@
         textarea:focus {
             outline: none;
             border-color: blue;
+           
         }
 
         .radio-group {
@@ -36,8 +43,64 @@
         }
 
     </style>
+
+<script>
+    let signupString = localStorage.getItem("clubsignups")
+if (!signupString) { signupsList = {} } 
+else signupsList = JSON.parse(signupString) 
+
+const form = document.getElementById("dForm"); 
+
+
+form.addEventListener("submit", function(e) { 
+    e.preventDefault(); 
+
+    if (confirm("Sure You Want To Save Your Work?")) {   
+      
+        const data = new FormData(form);
+
+
+        const obj = Object.fromEntries(data.entries()); 
+      
+        signupsList[obj.sid] = {};
+        for (let key in obj) { 
+            if (key != "sid") { 
+                signupsList[obj.sid][key] = obj[key];
+            }
+        }
+        
+        console.log(signupsList) 
+        signupString = JSON.stringify(signupsList) 
+        localStorage.setItem("clubsignups", signupString) 
+        form.submit();
+    }
+  });
+
+
+form.addEventListener("reset", function(e) { 
+  if (!confirm("Sure you want to clear your data?")) {
+    e.preventDefault();
+  }
+});
+show.onclick = function() {
+  window.location.href = "viewSignUps.html";
+}
+function changeColor(ele) {
+  ele.style.backgroundColor = "blue";
+} 
+function resetColor(ele) {
+  ele.style.backgroundColor = "white";
+  ele.style.border="2px solid black"
+  if (!ele.value.trim()) { 
+    ele.style.border="2px solid red"
+    ele.style.backgroundColor="lightpink"
+  }
+} 
+</script>
+ 
 </head>
 <body>
+    <a href="viewSignUps.html">View Sign Ups</a> 
 
 <form>
     <fieldset>
@@ -50,7 +113,7 @@
 
         <label for="birthday">Birthday</label>
         <input type="date" id="birthday" name="birthday" required>
-
+ 
         <label for="email">Email Address</label>
         <input type="email" id="email" name="email" required>
     </fieldset>
@@ -62,28 +125,21 @@
 
         <label for="grade">Grade Level</label>
         <select id="grade" name="grade" required>
-            <option value=""> </option>
-            <option value="g9">Grade 1</option>
-            <option value="g9">Grade 2</option>
-            <option value="g9">Grade 3</option>
-            <option value="g9">Grade 4</option>
-            <option value="g9">Grade 5</option>
-            <option value="g9">Grade 6</option>
-            <option value="g9">Grade 7</option>
-            <option value="g9">Grade 8</option>
+            <option disabled selected value> -- select an option -- </option>
+            <option value="g7">Grade 7</option>
+            <option value="g8">Grade 8</option>
             <option value="g9">Grade 9</option>
             <option value="g10">Grade 10</option>
             <option value="g11">Grade 11</option>
             <option value="g12">Grade 12</option>
-            <option value="college">College</option>
-        </select>
+         </select>
 
         <label>Intern / Extern</label>
         <div class="radio-group">
-            <input type="radio" id="intern" name="role" value="int" required>
+            <input type="radio" id="intern" name="intext" value="int" required>
             <label for="intern">Intern</label>
 
-            <input type="radio" id="extern" name="role" value="ext">
+            <input type="radio" id="extern" name="intext" value="ext">
             <label for="extern">Extern</label>
         </div>
 
@@ -102,9 +158,13 @@
     <textarea id="reason" name="reason" required></textarea>    
 
 
-    <br><br>
-    <button type="submit" class="submit-btn">Submit</button>
-    <button type="reset" class="reset-btn">Reset</button>
+        <fieldset>
+          <legend>Action Buttons</legend>
+          <button type="submit"> Accept </button>
+          <input type="reset" value=" Clear " />
+        </fieldset> 
+      </form>
+    
 </form>
 
 </body>
